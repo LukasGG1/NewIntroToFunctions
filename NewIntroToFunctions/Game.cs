@@ -68,7 +68,7 @@ namespace NewIntroToFunctions
         int playerHealth = 100;
         int playerHitChance = 30;
         int playerDodgeChance = 30;
-
+        //Plz Nerf random.
         Random random = new Random();
         //Type Name     Argument/Parameter list
         void RequestName()

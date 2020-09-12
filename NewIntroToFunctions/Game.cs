@@ -68,6 +68,7 @@ namespace NewIntroToFunctions
         int playerHealth = 100;
         int playerHitChance = 30;
         int playerDodgeChance = 30;
+        Weapon playersWeapon;
         //Plz Nerf random.
         Random random = new Random();
         //Type Name     Argument/Parameter list
@@ -97,24 +98,24 @@ namespace NewIntroToFunctions
             //Unarmed Weapon
             fist.Name = "Fist";
             fist.Damage = 1;
-            playerHitChance += 2;
+            fist._HitChance += 2;
             //One-Handed Weapon
             Sword.Name = "Sword";
             Sword.Damage = 5;
-            playerHitChance += 5;
+            Sword._HitChance += 5;
             //Two-Handed Weapon
             BattleAxe.Name = "Battle Axe";
             BattleAxe.Damage = 10;
-            playerHitChance += 3;
+            BattleAxe._HitChance += 3;
 
             //Mage Weapon
             Stave.Name = "Stave";
             Stave.Damage = 7;
-            playerHitChance = 10;
+            Stave._HitChance = 10;
             //Rogue/Archer Weapon
             Bow.Name = "Bow";
             Bow.Damage = 6;
-            playerHitChance += 12;
+            Bow._HitChance += 12;
 
         }
 
@@ -122,6 +123,7 @@ namespace NewIntroToFunctions
         {
             Console.WriteLine("You venture out to your next location");
             FlavorPrinter();
+
         }
 
         void StartBattle(Enemy enemy)
@@ -137,8 +139,8 @@ namespace NewIntroToFunctions
                     int HitRoll = random.Next(0, 100);
                     if (HitRoll > playerHitChance)
                     {
-                        Console.WriteLine("You yeeted rock and did whooping 5 damage");
-                        enemy.health -= 5;
+                        Console.WriteLine("You throw your" + playersWeapon.Name + "and did whooping " + playersWeapon.Damage + "damage");
+                        enemy.health -= playersWeapon.Damage;
                     }
                     else
                     {
@@ -213,6 +215,7 @@ namespace NewIntroToFunctions
         {
             Start();
             RequestName();
+            EquipWeapon();
             while (gameOver == false)
             {
                 Update();
@@ -259,7 +262,8 @@ namespace NewIntroToFunctions
                         Console.ReadKey();
                         Console.WriteLine(" It is worse fate for unforturne mortal. But, there is many more worse fate than your fate.");
                         Console.ReadKey();
-
+                        PossessedSteelArmor PossessedBoi = new PossessedSteelArmor();
+                        StartBattle(PossessedBoi);
                         break;
                     }
                 case 1:
@@ -270,6 +274,65 @@ namespace NewIntroToFunctions
                         break;
                     }
             }
+        }
+        private void EquipWeapon()
+        {
+            Console.Clear();
+            Console.WriteLine("What weapon would you like to have");
+            Console.Write("");
+            Console.WriteLine("1. fist");
+            Console.WriteLine("2. Sword");
+            Console.WriteLine("3. Battle Axe");
+            Console.WriteLine("4. Stave");
+            Console.WriteLine("5. Bow");
+            //----------------------------
+            string SelectedWeap = Console.ReadLine();
+            switch (SelectedWeap)
+            {
+                case ("1"):
+                    {
+                        playersWeapon = fist;
+                        break;
+                    }
+                case ("2"):
+                    {
+                        playersWeapon = Sword;
+                        break;
+                    }
+                case ("3"):
+                    {
+                        playersWeapon = BattleAxe;
+                        break;
+                    }
+                case ("4"):
+                    {
+                        playersWeapon = Stave;
+                        break;
+                    }
+                case ("5"):
+                    {
+                        playersWeapon = Bow;
+                        break;
+                    }
+                default:
+                    {
+                        playersWeapon = fist;
+                        break;
+                    }
+            }
+        }
+        private bool HitCheck(int enemyDodgeChance)
+        {
+            int HitRoll = random.Next(0, 100);
+            if (HitRoll > enemyDodgeChance - TotalHitChance())
+            {
+                return true;
+            }
+            return false;
+        }
+        private int TotalHitChance()
+        {
+            return playerHitChance + playersWeapon._HitChance;
         }
     }
 }

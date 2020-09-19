@@ -8,10 +8,10 @@ namespace NewIntroToFunctions
     {
         Random random = new Random();
         public string name = " ";
-        public int health = 10;
-        public int damage = 5;
-        public int DodgeChance = 10;
-        public int HitChance = 10;
+        public float health = 10;
+        public float damage = 5;
+        public float DodgeChance = 10;
+        public float HitChance = 10;
         public string weakness = "None";
 
         public Enemy()

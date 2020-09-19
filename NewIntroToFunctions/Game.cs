@@ -65,10 +65,11 @@ namespace NewIntroToFunctions
         //-----------------------------------
         bool gameOver = false;
         string _playerName;
-        int playerHealth = 10;
+        float playerHealth = 10;
         int playerHitChance = 30;
         int playerDodgeChance = 30;
-        int playerDamage = 0;
+        int playerDamage = 2;
+        
         Weapon playersWeapon;
         //Plz Nerf random.
         Random random = new Random();
@@ -205,220 +206,230 @@ namespace NewIntroToFunctions
 
 
         void StartBattle(Enemy enemy)
+        {
+            char input = ' ';
+            while (playerHealth > 0 && enemy.health > 0)
             {
-                char input = ' ';
-                while (playerHealth > 0 && enemy.health > 0)
+                Console.WriteLine("Player health: " + playerHealth);
+                Console.WriteLine(enemy.name + " health: " + enemy.health);
+                input = GetInput("Attack", "Parry", "What will you do?");
+                if (input == '1')
                 {
-                    Console.WriteLine("Player health: " + playerHealth);
-                    Console.WriteLine(enemy.name + " health: " + enemy.health);
-                    input = GetInput("Attack", "Defend", "What will you do?");
-                    if (input == '1')
+                    int HitRoll = random.Next(0, 100);
+                    if (HitCheck(TotalHitChance(), enemy.DodgeChance))
                     {
-                        int HitRoll = random.Next(0, 100);
-                        if (HitCheck(TotalHitChance(), enemy.DodgeChance))
-                        {
-                            Console.WriteLine("You throw your " + playersWeapon.Name + " and did whooping " + playersWeapon.Damage + " damage");
-                            enemy.health -= playersWeapon.Damage;
-                        }
-                        else
-                        {
-                            Console.WriteLine("Enemy dodged your attack.");
-                        }
-                        Console.WriteLine("The enemy did 5 damage will your feeling. ");
-                        playerHealth -= 5;
+                        Console.WriteLine("You throw your " + playersWeapon.Name + " and did whooping " + playersWeapon.Damage + " damage");
+                        enemy.health -= playersWeapon.Damage;
                     }
-                    else if (input == '2')
+                    else
                     {
-                        int HitRoll = random.Next(0, 100);
-                        if (HitCheck(enemy.HitChance, playerDodgeChance))
-                        {
-                            Console.WriteLine("Piccolo told you dodge the slime's attack. So, you did dodge.");
-                            enemy.health -= 3;
-                        }
-                        else
-                        {
-                            Console.WriteLine("Did you dodge attack?");
-                            playerHealth -= 0;
-                        }
+                        Console.WriteLine("Enemy dodged your attack.");
                     }
-                    else if (input == '3')
-                    {
-                        if (enemy.weakness == "Fire")
-                        {
-                            Console.WriteLine("This" + enemy.name + " is weak to fire, you deal 40 damage!");
-                            enemy.health -= 40;
-                        }
-                        else
-                        {
-                            Console.WriteLine("You yeeted a fireball that kinda work and it deal whooping 5 damage");
-                            enemy.health -= 5;
-                        }
-                    }
-                    Console.ReadKey();
-                    Console.Clear();
+
+                    Console.WriteLine("The enemy did " + enemy.damage);
+
+                    playerHealth -= enemy.damage;
                 }
-
-            }
-
-
-            void ViewStats()
-            {
-                //Prints player stats to screen.
-                Console.WriteLine(_playerName);
-                Console.WriteLine("\nPress any to continue");
+                else if (input == '2')
+                {
+                    int HitRoll = random.Next(0, 100);
+                    if (HitCheck(enemy.HitChance, playerDodgeChance))
+                    {
+                        Console.WriteLine("You failed parry enemy's attack and enemy damage " + enemy.damage + " your health");
+                        playerHealth -= enemy.damage;
+                    }
+                    else
+                    {
+                        Console.WriteLine("You parryed and damage " + playerDamage + " enemy");
+                        playerHealth -= 0;
+                        enemy.health -= TotalDamage();
+                    }
+                }
+                else if (input == '3')
+                {
+                    if (enemy.weakness == "Fire")
+                    {
+                        Console.WriteLine("This" + enemy.name + " is weak to fire, you deal 40 damage!");
+                        enemy.health -= 40;
+                    }
+                    else
+                    {
+                        Console.WriteLine("You yeeted a fireball that kinda work and it deal whooping 5 damage");
+                        enemy.health -= 5;
+                    }
+                }
+                PrintStats();
+                Console.WriteLine("Press any key to continue.");
                 Console.Write("> ");
                 Console.ReadKey();
-            }
-
-            char GetInput(string option1, string option2, string query)
-            {
-                //initialize input value
-                char input = ' ';
-                //Loop until a valid input is received
-                while (input != '1' && input != '2')
-                {
-                    Console.WriteLine(query);
-                    Console.WriteLine("1. " + option1);
-                    Console.WriteLine("2. " + option2);
-                    Console.WriteLine("3. View Stats");
-                    Console.WriteLine("> ");
-                    //Get input from user
-                    input = Console.ReadKey().KeyChar;
-                    Console.WriteLine();
-                    //if the player input 3, call the view stats function
-                }
-                return input;
-            }
-
-            public void Run()
-            {
-                Start();
-                WeaponInization();
-                RequestName();
-                EquipWeapon();
-                SelectCharacter();
-                while (gameOver == false)
-                {
-                    Update();
-                }
-
-                End();
-
-            }
-            //Used for initializing variable
-            //also used for performing start up tasks that should only be done once
-            public void Start()
-            {
-                Console.WriteLine("Welcome to my Shadow Game");
-                Console.ReadKey();
-
-
-
-            }
-            //Used for all game logic will repeat
-            public void Update()
-            {
-
-                Explore();
-                //EnterRoom(0);
-            }
-            //performed once when the game ends
-            public void End()
-            {
-                Console.WriteLine("\nThank you for playing my Shadow Game");
-            }
-
-            private void FlavorPrinter()
-            {
-                int SelecetedText = random.Next(0, 5);
-
-                switch (SelecetedText)
-                {
-                    case 0:
-                        {
-                            Console.Clear();
-                            Console.WriteLine(" You decide to go left and you heard nearly squish. and you look around but nothing but realizes you look down at strange-moving water like as snop.");
-                            Console.ReadKey();
-                            Console.WriteLine(" Greater Slime ambushed, threw yourself to slime's liquid. and you are trapped forever until you are digested to death.");
-                            Console.ReadKey();
-                            Console.WriteLine(" Your body is reduced to atom or power for slime and you became forgetten and your exitence is no longer known to people.");
-                            Console.ReadKey();
-                            Console.WriteLine(" It is worse fate for unforturne mortal. But, there is many more worse fate than your fate.");
-                            Console.ReadKey();
-                            PossessedSteelArmor PossessedBoi = new PossessedSteelArmor();
-                            StartBattle(PossessedBoi);
-                            break;
-                        }
-                    case 1:
-                        {
-                            Console.WriteLine("Help");
-                            Console.Clear();
-                            Console.WriteLine(" ");
-                            break;
-                        }
-                }
-            }
-            private void EquipWeapon()
-            {
                 Console.Clear();
-                Console.WriteLine("What weapon would you like to have");
-                Console.Write("");
-                Console.WriteLine("1. fist");
-                Console.WriteLine("2. Sword");
-                Console.WriteLine("3. Battle Axe");
-                Console.WriteLine("4. Stave");
-                Console.WriteLine("5. Bow");
-                //----------------------------
-                string SelectedWeap = Console.ReadLine();
-                switch (SelectedWeap)
-                {
-                    case ("1"):
-                        {
-                            playersWeapon = fist;
-                            break;
-                        }
-                    case ("2"):
-                        {
-                            playersWeapon = Sword;
-                            break;
-                        }
-                    case ("3"):
-                        {
-                            playersWeapon = BattleAxe;
-                            break;
-                        }
-                    case ("4"):
-                        {
-                            playersWeapon = Stave;
-                            break;
-                        }
-                    case ("5"):
-                        {
-                            playersWeapon = Bow;
-                            break;
-                        }
-                    default:
-                        {
-                            playersWeapon = fist;
-                            break;
-                        }
-
-                }
-                Console.WriteLine("You picked " + playersWeapon.Name);
-                Console.ReadKey();
-            }
-            private bool HitCheck(int hitChance ,int enemyDodgeChance)
-            {
-                int HitRoll = random.Next(0, 100);
-                if (HitRoll > enemyDodgeChance - hitChance)
-                {
-                    return true;
-                }
-                return false;
-            }
-            private int TotalHitChance()
-            {
-                return playerHitChance + playersWeapon._HitChance;
             }
         }
+
+
+        void ViewStats()
+        {
+            //Prints player stats to screen.
+            Console.WriteLine(_playerName);
+            Console.WriteLine("\nPress any to continue");
+            Console.Write("> ");
+            Console.ReadKey();
+        }
+
+        char GetInput(string option1, string option2, string query)
+        {
+            //initialize input value
+            char input = ' ';
+            //Loop until a valid input is received
+            while (input != '1' && input != '2')
+            {
+                Console.WriteLine(query);
+                Console.WriteLine("1. " + option1);
+                Console.WriteLine("2. " + option2);
+                Console.WriteLine("3. View Stats");
+                Console.WriteLine("> ");
+                //Get input from user
+                input = Console.ReadKey().KeyChar;
+                Console.WriteLine();
+                //if the player input 3, call the view stats function
+            }
+            return input;
+        }
+
+        public void Run()
+        {
+            Start();
+            WeaponInization();
+            RequestName();
+            EquipWeapon();
+            SelectCharacter();
+            while (gameOver == false)
+            {
+                Update();
+            }
+
+            End();
+
+        }
+        //Used for initializing variable
+        //also used for performing start up tasks that should only be done once
+        public void Start()
+        {
+            Console.WriteLine("Welcome to my Shadow Game");
+            Console.ReadKey();
+
+
+
+        }
+        //Used for all game logic will repeat
+        public void Update()
+        {
+
+            Explore();
+            //EnterRoom(0);
+        }
+        //performed once when the game ends
+        public void End()
+        {
+            Console.WriteLine("\nThank you for playing my Shadow Game");
+        }
+
+        private void FlavorPrinter()
+        {
+            int SelecetedText = random.Next(0, 5);
+
+            switch (SelecetedText)
+            {
+                case 0:
+                    {
+                        Console.Clear();
+                        Console.WriteLine(" You decide to go left and you heard nearly squish. and you look around but nothing but realizes you look down at strange-moving water like as snop.");
+                        Console.ReadKey();
+                        Console.WriteLine(" Greater Slime ambushed, threw yourself to slime's liquid. and you are trapped forever until you are digested to death.");
+                        Console.ReadKey();
+                        Console.WriteLine(" Your body is reduced to atom or power for slime and you became forgetten and your exitence is no longer known to people.");
+                        Console.ReadKey();
+                        Console.WriteLine(" It is worse fate for unforturne mortal. But, there is many more worse fate than your fate.");
+                        Console.ReadKey();
+                        PossessedSteelArmor PossessedBoi = new PossessedSteelArmor();
+                        StartBattle(PossessedBoi);
+                        break;
+                    }
+                case 1:
+                    {
+                        Console.WriteLine("Help");
+                        Console.Clear();
+                        Console.WriteLine(" ");
+                        break;
+                    }
+            }
+        }
+        private void EquipWeapon()
+        {
+            Console.Clear();
+            Console.WriteLine("What weapon would you like to have");
+            Console.Write("");
+            Console.WriteLine("1. fist");
+            Console.WriteLine("2. Sword");
+            Console.WriteLine("3. Battle Axe");
+            Console.WriteLine("4. Stave");
+            Console.WriteLine("5. Bow");
+            //----------------------------
+            string SelectedWeap = Console.ReadLine();
+            switch (SelectedWeap)
+            {
+                case ("1"):
+                    {
+                        playersWeapon = fist;
+                        break;
+                    }
+                case ("2"):
+                    {
+                        playersWeapon = Sword;
+                        break;
+                    }
+                case ("3"):
+                    {
+                        playersWeapon = BattleAxe;
+                        break;
+                    }
+                case ("4"):
+                    {
+                        playersWeapon = Stave;
+                        break;
+                    }
+                case ("5"):
+                    {
+                        playersWeapon = Bow;
+                        break;
+                    }
+                default:
+                    {
+                        playersWeapon = fist;
+                        break;
+                    }
+
+            }
+            Console.WriteLine("You picked " + playersWeapon.Name);
+            Console.ReadKey();
+        }
+        private bool HitCheck(float hitChance, float enemyDodgeChance)
+        {
+            int HitRoll = random.Next(0, 100);
+            if (HitRoll > enemyDodgeChance - hitChance)
+            {
+                return true;
+            }
+            return false;
+        }
+        private int TotalHitChance()
+        {
+            return playerHitChance + playersWeapon._HitChance;
+
+        }
+        private float TotalDamage()
+        {
+            return (playersWeapon.Damage + (playerDamage*random.Next(1,5)));
+        }
     }
+}

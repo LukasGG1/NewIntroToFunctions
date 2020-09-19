@@ -65,7 +65,7 @@ namespace NewIntroToFunctions
         //-----------------------------------
         bool gameOver = false;
         string _playerName;
-        int playerHealth = 100;
+        int playerHealth = 10;
         int playerHitChance = 30;
         int playerDodgeChance = 30;
         int playerDamage = 0;
@@ -98,7 +98,7 @@ namespace NewIntroToFunctions
         {
             //Unarmed Weapon
             fist.Name = "Fist";
-            fist.Damage = 1;
+            fist.Damage = 0;
             fist._HitChance += 2;
             //One-Handed Weapon
             Sword.Name = "Sword";
@@ -155,13 +155,15 @@ namespace NewIntroToFunctions
                             _playerName = "Sir Kibble";
                             playerHealth = 40;
                             playerDamage = 3;
+                            playerHitChance = 5;
                             break;
                         }
                     case '2':
                         {
                             _playerName = "Gnojoel";
                             playerHealth = 30;
-                            playerDamage = 7;
+                            playerDamage = 1;
+                            playerHitChance = 8;
                             break;
                         }
                     case '3':
@@ -169,6 +171,7 @@ namespace NewIntroToFunctions
                             _playerName = "Joedazz";
                             playerHealth = 50;
                             playerDamage = 5;
+                            playerHitChance = 2;
                             break;
                         }
                     //If an invalid input is selected display and input message and input over again.
@@ -182,8 +185,26 @@ namespace NewIntroToFunctions
                 }
                 Console.Clear();
             }
+            PrintStats();
+            Console.WriteLine("Press any key to continue.");
+            Console.Write("> ");
+            Console.ReadKey();
+            Console.Clear();
+        }
 
-            void StartBattle(Enemy enemy)
+        void PrintStats()
+        {
+            Console.WriteLine("Name" + _playerName);
+            Console.WriteLine("Health: " + playerHealth);
+            Console.WriteLine("Damage: " + playerDamage + playersWeapon.Damage);
+            Console.WriteLine("Hit Chance: " + playerHitChance);
+            Console.WriteLine("Weapon: " + playersWeapon.Name);
+            Console.ReadKey();
+        }
+
+
+
+        void StartBattle(Enemy enemy)
             {
                 char input = ' ';
                 while (playerHealth > 0 && enemy.health > 0)
@@ -194,7 +215,7 @@ namespace NewIntroToFunctions
                     if (input == '1')
                     {
                         int HitRoll = random.Next(0, 100);
-                        if (HitRoll > playerHitChance)
+                        if (HitCheck(TotalHitChance(), enemy.DodgeChance))
                         {
                             Console.WriteLine("You throw your " + playersWeapon.Name + " and did whooping " + playersWeapon.Damage + " damage");
                             enemy.health -= playersWeapon.Damage;
@@ -209,15 +230,15 @@ namespace NewIntroToFunctions
                     else if (input == '2')
                     {
                         int HitRoll = random.Next(0, 100);
-                        if (HitRoll > playerDodgeChance)
+                        if (HitCheck(enemy.HitChance, playerDodgeChance))
                         {
                             Console.WriteLine("Piccolo told you dodge the slime's attack. So, you did dodge.");
-                            enemy.health -= 5;
+                            enemy.health -= 3;
                         }
                         else
                         {
-                            Console.WriteLine("The Slime prepare for attack you with Doom Guy's Theme and attacked you");
-                            playerHealth -= 5;
+                            Console.WriteLine("Did you dodge attack?");
+                            playerHealth -= 0;
                         }
                     }
                     else if (input == '3')
@@ -238,6 +259,7 @@ namespace NewIntroToFunctions
                 }
 
             }
+
 
             void ViewStats()
             {
@@ -272,9 +294,9 @@ namespace NewIntroToFunctions
             {
                 Start();
                 WeaponInization();
-                SelectCharacter();
                 RequestName();
                 EquipWeapon();
+                SelectCharacter();
                 while (gameOver == false)
                 {
                     Update();
@@ -385,10 +407,10 @@ namespace NewIntroToFunctions
                 Console.WriteLine("You picked " + playersWeapon.Name);
                 Console.ReadKey();
             }
-            private bool HitCheck(int enemyDodgeChance)
+            private bool HitCheck(int hitChance ,int enemyDodgeChance)
             {
                 int HitRoll = random.Next(0, 100);
-                if (HitRoll > enemyDodgeChance - TotalHitChance())
+                if (HitRoll > enemyDodgeChance - hitChance)
                 {
                     return true;
                 }
@@ -400,4 +422,3 @@ namespace NewIntroToFunctions
             }
         }
     }
-}

@@ -9,6 +9,7 @@ namespace NewIntroToFunctions
         Random random = new Random();
         public string name = " ";
         public int health = 10;
+        public int damage = 5;
         public int DodgeChance = 10;
         public int HitChance = 10;
         public string weakness = "None";
